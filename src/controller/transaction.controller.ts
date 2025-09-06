@@ -30,6 +30,11 @@ export class TransactionController {
     );
   }
 
+  @Get('summary')
+  async getSummary(@GetUser() jwtPayload: JwtPayload) {
+    return await this.transactionService.getSummary(jwtPayload);
+  }
+
   @Get('/:id')
   async getTransactionById(
     @Param('id') id: string,
@@ -55,5 +60,7 @@ export class TransactionController {
   async deleteTransactionById(
     @Param('id') id: string,
     @GetUser() jwtPayload: JwtPayload,
-  ) {}
+  ) {
+    return await this.transactionService.deleteTransactionById(id, jwtPayload);
+  }
 }
