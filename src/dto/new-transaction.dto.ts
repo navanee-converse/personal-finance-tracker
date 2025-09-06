@@ -29,3 +29,13 @@ export class NewTransactionDto {
   @IsDate()
   transaction_date?: Date;
 }
+
+export class TransactionData {
+  id: string;
+  amount: number;
+  type: TransactionTypes;
+  category: string;
+  description?: string;
+  transaction_date: Date;
+  created_at: Date;
+}

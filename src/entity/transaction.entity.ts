@@ -16,14 +16,17 @@ export class Transaction {
   id: string;
 
   @ManyToOne(() => User, (user_id) => user_id.user_transaction)
-  @JoinColumn({name: 'user_id'})
+  @JoinColumn({ name: 'user_id' })
   user_id: User;
 
   @Column({ type: 'decimal', scale: 5, precision: 10 })
-  amount: string;
+  amount: number;
 
   @Column({ type: 'enum', enum: TransactionTypes })
   type: TransactionTypes;
+
+  @Column({ type: 'varchar', length: 50 })
+  category: string;
 
   @Column({ type: 'text', nullable: true })
   description?: string;
@@ -32,5 +35,5 @@ export class Transaction {
   transaction_date: Date;
 
   @CreateDateColumn()
-  created_at: string;
+  created_at: Date;
 }
