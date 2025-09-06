@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { FinanceTrackerModule } from './module/finance-tracker.module';
+import { TransactionModule } from './module/transaction.module';
 import { AuthModule } from './module/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { Transaction } from './entity/transaction.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guard/auth.guard';
 
 @Module({
   imports: [
@@ -28,8 +29,15 @@ import { PassportModule } from '@nestjs/passport';
       synchronize: true,
       logging: true,
     }),
-    FinanceTrackerModule,
+    TransactionModule,
     AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    AuthGuard
   ],
 })
 export class AppModule {}

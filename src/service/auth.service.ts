@@ -12,6 +12,8 @@ import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from 'src/dto/jwt-payload.dto';
+import { APIResponse } from 'src/dto/response.dto';
 
 @Injectable()
 export class AuthService {
@@ -25,11 +27,9 @@ export class AuthService {
         where: { email: userData.email },
       });
       if (isPresent) {
-        throw new ConflictException({
-          success: false,
-          statusCode: 409,
-          error: 'User with this email is already registered',
-        });
+        throw new ConflictException(
+          'User with this email is already registered',
+        );
       }
       const hashedPassword = await bcrypt.hash(
         userData.password,
@@ -41,14 +41,14 @@ export class AuthService {
       });
       const payload = { id: user.id, name: user.full_name, email: user.email };
       const token = await this.jwtService.signAsync(payload);
-
+      const response: APIResponse<unknown> = {
+        success: true,
+        statusCode: HttpStatus.CREATED,
+        message: 'Registration Completed',
+      };
       return {
         token,
-        response: {
-          success: true,
-          statusCOde: HttpStatus.CREATED,
-          message: 'Registration Completed',
-        },
+        response,
       };
     } catch (error) {
       throw error;
@@ -60,22 +60,14 @@ export class AuthService {
       where: { email: userData.email },
     });
     if (!isUser) {
-      throw new NotFoundException({
-        success: false,
-        statusCode: HttpStatus.NOT_FOUND,
-        error: 'User mail not found',
-      });
+      throw new NotFoundException('User mail not found');
     }
     const isValidPassword = await bcrypt.compare(
       userData.password,
       isUser.password,
     );
     if (!isValidPassword) {
-      throw new BadRequestException({
-        success: false,
-        statusCode: HttpStatus.BAD_REQUEST,
-        error: 'Invalid password',
-      });
+      throw new BadRequestException('Invalid password');
     }
     const payload = {
       id: isUser.id,
@@ -83,13 +75,32 @@ export class AuthService {
       email: isUser.email,
     };
     const token = await this.jwtService.signAsync(payload);
+    const response: APIResponse<unknown> = {
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Login Successfull',
+    };
+
     return {
       token,
-      response: {
-        success: true,
-        statusCOde: HttpStatus.OK,
-        message: 'Login Successfull',
-      },
+      response,
+    };
+  }
+
+  async profile(userPayload: JwtPayload): Promise<APIResponse<Partial<User>>> {
+    const user = await this.userRepo.findOne({ where: { id: userPayload.id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const userPayloads = {
+      id: user.id,
+      email: user.email,
+      fullName: user.full_name,
+    };
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      data: userPayloads,
     };
   }
 }
