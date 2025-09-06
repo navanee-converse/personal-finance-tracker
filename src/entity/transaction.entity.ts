@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -15,9 +16,10 @@ export class Transaction {
   id: string;
 
   @ManyToOne(() => User, (user_id) => user_id.user_transaction)
+  @JoinColumn({name: 'user_id'})
   user_id: User;
 
-  @Column({ type: 'decimal', scale: 10, precision: 5 })
+  @Column({ type: 'decimal', scale: 5, precision: 10 })
   amount: string;
 
   @Column({ type: 'enum', enum: TransactionTypes })

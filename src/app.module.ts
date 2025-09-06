@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    // ConfigModule.forRoot({ isGlobal: true }),
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({
       secret: process.env.SECRETE_KEY,
@@ -17,11 +18,12 @@ import { JwtModule } from '@nestjs/jwt';
       },
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      port: Number(process.env.PORT),
-      username: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      database: process.env.DATABASE,
+      type: 'mysql',
+      host: process.env.HOST,
+      port: Number(process.env.PORT) || 3306,
+      username: process.env.USER || 'root',
+      password: process.env.PASSWORD || 'admin',
+      database: process.env.DATABASE || 'finance_tracker',
       entities: [User, Transaction],
       synchronize: true,
       logging: true,
