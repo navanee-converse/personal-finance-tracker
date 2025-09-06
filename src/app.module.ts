@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { FinanceTrackerModule } from './module/finance-tracker.module';
+import { AuthModule } from './module/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { dataSourceOption } from './entity/data-source/data-source';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [FinanceTrackerModule, AuthModule, ConfigModule.forRoot({isGlobal: true}), TypeOrmModule.forRoot({dataSourceOption})],
 })
 export class AppModule {}
