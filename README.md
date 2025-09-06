@@ -97,3 +97,20 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Run below script
+```bash 
+$ npm install
+```
+## Create .env file and create below environment variables
+
+PORT = database port number
+HOST = database host
+PASSWORD = database password
+DATABASE = database name
+USER = database user name
+SALTROUND = salt round range between 1 to 10
+SECRETE_KEY = secrete key value for generate token
+EXPIRATION_TIME = token expiration time
+
+APP_PORT = server port
