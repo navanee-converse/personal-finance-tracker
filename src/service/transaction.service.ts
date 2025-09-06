@@ -1,19 +1,18 @@
 import {
   BadRequestException,
-  ForbiddenException,
   HttpStatus,
-  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { JwtPayload } from 'src/dto/jwt-payload.dto';
 import {
   NewTransactionDto,
   TransactionData,
 } from 'src/dto/new-transaction.dto';
+import { QueryFilter } from 'src/dto/quer-filter.dto';
 import { APIResponse } from 'src/dto/response.dto';
 import { TransactionSummary } from 'src/dto/transaction-summary.dto';
 import { Transaction } from 'src/entity/transaction.entity';
@@ -52,6 +51,30 @@ export class TransactionService {
     };
   }
 
+  async getAllTransaction(
+    jwtPayload: JwtPayload,
+    queryFilter: QueryFilter,
+  ): Promise<APIResponse<Transaction[]>> {
+    await this.validateUser(jwtPayload);
+    let { pageNumber, limit, ...query } = queryFilter;
+    pageNumber = pageNumber ? pageNumber : 1;
+    limit = limit ? limit : 10;
+    const skip = (pageNumber - 1) * limit;
+    const result = await this.transactionRepo.findAndCount({
+      where: { ...query },
+      take: limit,
+      skip: skip,
+      order: { id: 'ASC' },
+    });
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      data: result[0],
+      currentPage: Number(pageNumber),
+      numberOfData: result[1],
+    };
+  }
+
   async getSummary(
     jwtPayload: JwtPayload,
   ): Promise<APIResponse<TransactionSummary>> {
@@ -78,7 +101,6 @@ export class TransactionService {
         }
         transaction_count++;
       });
-      console.log(transactions[0].amount);
 
       return {
         success: true,

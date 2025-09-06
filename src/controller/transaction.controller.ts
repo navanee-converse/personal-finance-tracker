@@ -7,10 +7,12 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { GetUser } from 'src/decorator/user-data.decorator';
 import { JwtPayload } from 'src/dto/jwt-payload.dto';
 import { NewTransactionDto } from 'src/dto/new-transaction.dto';
+import { QueryFilter } from 'src/dto/quer-filter.dto';
 import { TransactionService } from 'src/service/transaction.service';
 
 @Controller('transactions')
@@ -28,6 +30,13 @@ export class TransactionController {
       userTransaction,
       jwtPayload,
     );
+  }
+  @Get()
+  async getAllTransaction(
+    @Query() query: QueryFilter,
+    @GetUser() jwtPayload: JwtPayload,
+  ) {
+    return await this.transactionService.getAllTransaction(jwtPayload, query);
   }
 
   @Get('summary')

@@ -3,4 +3,6 @@ export class APIResponse<T> {
   statusCode: number;
   message?: string;
   data?: T;
+  currentPage?: number;
+  numberOfData?: number;
 }
