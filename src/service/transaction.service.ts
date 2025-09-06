@@ -55,13 +55,13 @@ export class TransactionService {
     jwtPayload: JwtPayload,
     queryFilter: QueryFilter,
   ): Promise<APIResponse<Transaction[]>> {
-    await this.validateUser(jwtPayload);
+    const user = await this.validateUser(jwtPayload);
     let { pageNumber, limit, ...query } = queryFilter;
     pageNumber = pageNumber ? pageNumber : 1;
     limit = limit ? limit : 10;
     const skip = (pageNumber - 1) * limit;
     const result = await this.transactionRepo.findAndCount({
-      where: { ...query },
+      where: { ...query, user_id: { id: user.id } },
       take: limit,
       skip: skip,
       order: { id: 'ASC' },
