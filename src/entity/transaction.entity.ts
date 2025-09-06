@@ -2,21 +2,19 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { TransactionTypes } from 'src/enum/transaction.type';
+import 'reflect-metadata';
 
 @Entity({ name: 'transactions' })
 export class Transaction {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id' })
-  @ManyToOne(() => User, (user) => user.user_transaction)
+  @ManyToOne(() => User, (user_id) => user_id.user_transaction)
   user_id: User;
 
   @Column({ type: 'decimal', scale: 10, precision: 5 })

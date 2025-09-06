@@ -1,8 +1,8 @@
-import { DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { User } from '../user.entity';
 import { Transaction } from '../transaction.entity';
 
-export const dataSourceOption: DataSourceOptions = {
+export const dataSourceOption = new DataSource({
   type: 'mysql',
   port: Number(process.env.PORT),
   username: process.env.USERNAME,
@@ -11,4 +11,4 @@ export const dataSourceOption: DataSourceOptions = {
   entities: [User, Transaction],
   synchronize: false,
   logging: true,
-};
+});
