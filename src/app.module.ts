@@ -6,10 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { Transaction } from './entity/transaction.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
-    // ConfigModule.forRoot({ isGlobal: true }),
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({
       secret: process.env.SECRETE_KEY,
@@ -19,7 +19,7 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.HOST,
+      host: process.env.HOST || 'localhost',
       port: Number(process.env.PORT) || 3306,
       username: process.env.USER || 'root',
       password: process.env.PASSWORD || 'admin',

@@ -1,5 +1,5 @@
 import { Body, Controller, Inject, Post, Res } from '@nestjs/common';
-import { UserDto } from 'src/dto/user.dto';
+import { LoginDto, UserDto } from 'src/dto/user.dto';
 import { AuthService } from 'src/service/auth.service';
 import { Response } from 'express';
 
@@ -11,6 +11,13 @@ export class AuthController {
     const userTokenAndResponse = await this.authService.regiser(userData);
     res.setHeader('Authorization', `Bearer ${userTokenAndResponse.token}`);
     res.json(userTokenAndResponse.response);
-    return userTokenAndResponse;
+    // return userTokenAndResponse;
+  }
+
+  @Post('login')
+  async login(@Body() userData: LoginDto, @Res() res: Response) {
+    const userTokenAndResponse = await this.authService.login(userData);
+    res.setHeader('Authorization', `Bearer ${userTokenAndResponse.token}`);
+    res.json(userTokenAndResponse.response);
   }
 }
